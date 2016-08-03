@@ -39,12 +39,13 @@ copy mesos.conf /etc/nginx/conf.d
 service nginx start
 
 service firewalld start
-firewall-cmd --zone=public --add-port=80/tcp --permanent
 firewall-cmd --add-interface=eth0
 
+firewall-cmd --zone=public --add-port=80/tcp --permanent
 firewall-cmd --zone=public --add-port=8881/tcp --permanent
 firewall-cmd --zone=public --add-port=8882/tcp --permanent
 firewall-cmd --zone=public --add-port=8883/tcp --permanent
 
-firewall-cmd --reload
 firewall-cmd --permanent --zone=public --add-rich-rule="rule family="ipv4" source address="138.68.30.252" port protocol="tcp" port="5050" accept"
+
+firewall-cmd --reload
