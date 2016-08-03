@@ -1,4 +1,4 @@
-yum install -y tar wget git vim
+yum install -y tar wget vim
 wget http://repos.fedorapeople.org/repos/dchen/apache-maven/epel-apache-maven.repo -O /etc/yum.repos.d/epel-apache-maven.repo
 yum install -y epel-release
 
@@ -32,3 +32,19 @@ cp ./config.json /etc/mesos-dns
 
 echo "Do not forget to run mesos-dns via marathon:"
 echo "mesos-dns -config=/etc/mesos-dns/config.json"
+
+
+yum install nginx 
+copy mesos.conf /etc/nginx/conf.d
+service nginx start
+
+service firewalld start
+firewall-cmd --zone=public --add-port=80/tcp --permanent
+firewall-cmd --add-interface=eth0
+
+firewall-cmd --zone=public --add-port=8881/tcp --permanent
+firewall-cmd --zone=public --add-port=8882/tcp --permanent
+firewall-cmd --zone=public --add-port=8883/tcp --permanent
+
+firewall-cmd --reload
+firewall-cmd --permanent --zone=public --add-rich-rule="rule family="ipv4" source address="138.68.30.252" port protocol="tcp" port="5050" accept"
