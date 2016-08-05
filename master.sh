@@ -15,12 +15,13 @@ sudo -u zookeeper zookeeper-server-initialize --myid=1
 sudo service zookeeper-server start
 
 rpm -Uvh http://repos.mesosphere.com/el/7/noarch/RPMS/mesosphere-el-repo-7-1.noarch.rpm
-yum -y install mesos-0.28.2 marathon chronos
+yum -y install mesos-0.28.2 marathon chronos device-mapper-event-libs docker
 
 service mesos-master start
 service mesos-slave start
 service marathon start
 service chronos start
+service docker start
 
 
 wget https://github.com/mesosphere/mesos-dns/releases/download/v0.5.2/mesos-dns-v0.5.2-linux-amd64
@@ -36,8 +37,10 @@ echo "mesos-dns -config=/etc/mesos-dns/config.json"
 
 yum install nginx 
 copy mesos.conf /etc/nginx/conf.d
+/sbin/chkconfig nginx on
 service nginx start
 
+/sbin/chkconfig firewalld on
 service firewalld start
 firewall-cmd --add-interface=eth0
 
@@ -45,6 +48,7 @@ firewall-cmd --zone=public --add-port=80/tcp --permanent
 firewall-cmd --zone=public --add-port=8881/tcp --permanent
 firewall-cmd --zone=public --add-port=8882/tcp --permanent
 firewall-cmd --zone=public --add-port=8883/tcp --permanent
+firewall-cmd --zone=public --add-port=6379/tcp --permanent
 
 firewall-cmd --permanent --zone=public --add-rich-rule="rule family="ipv4" source address="138.68.30.252" port protocol="tcp" port="5050" accept"
 
